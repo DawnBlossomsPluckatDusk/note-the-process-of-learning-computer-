@@ -185,5 +185,85 @@ Makefile主要包含五个部分：
 6. 根据依赖关系决定哪些目标需要重新生成
 7. 执行生成命令
 
-## 规则书写
+## 文件搜寻
 
+在Makefile中设置特殊变量`VPATH`可以实现让make去寻找依赖的文件
+
+```makefile
+VPATH = src:../headers
+```
+
+make在当前目录没有找到对应的依赖文件时，会按照这个顺序进行搜寻
+
+
+
+另一种搜寻方式：使用`vpath`关键字
+
+1. `vpath <pattern> <directories>`为符合模式<pattern>的文件指定搜索目录<directories>
+2. `vpath <pattern>`清除符合模式<pattern>的文件的搜索目录
+3. `vpath` 清除所有已被设置好了的文件搜索目录
+
+PS: vpath使用方法中的<pattern>需要包含`%`字符
+
+```makefile
+vpath %.h ../headers
+```
+
+该语句表示，在../headers目录下搜索所有以.h结尾的文件
+
+
+
+如果连续的vpath语句中出现相同的pattern，或是被重复的pattern，那么make会按照vpath语句的先后顺序来执行
+
+
+
+## 伪目标
+
+可以使用`.PHONY`来指明一个目标是伪目标
+
+```makefile
+.PHONY : clean  #声明clean是伪目标
+clean:
+rm -rf *.ob
+```
+
+
+
+## 静态模式
+
+静态模式可以更加容易地定义多目标的规则
+
+语法：
+
+```makefile
+<targets> : <target-pattern> : <prereq-patterns>
+<command>
+```
+
+
+
+`target-pattern`：指明了targets的模式
+
+`prereq-patterns`：指定目标的依赖模式，对`target-pattern`形成的模式再进行一次以依赖目标的定义
+
+
+
+例子：
+
+如果<target-parrtern>定义成“%.o”，意思是我们的<target>集合中都是以“.o”结尾的，而如果我们的<prereq-parrterns>定义成“%.c”，意思是对<target-parrtern>所形成的目标集进行二次定义，其计算方法是，取<target-parrtern>模式中的“%”（也就是去掉了[.o]这个结尾），并为其加上[.c]这个结尾，形成的新集合
+
+
+
+## 显示命令
+
+当我们用`@`字符在命令行前，那么，这个命令将不被make显示出来
+
+```makefile
+@echo compiling
+```
+
+会输出：compiling
+
+
+
+如果make执行时，带入参数`-n`或`--just-print`，那么其只是显示命令，但不会执行命令
