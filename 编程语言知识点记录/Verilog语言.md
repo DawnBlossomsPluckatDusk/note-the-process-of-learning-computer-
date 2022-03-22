@@ -153,3 +153,168 @@ wire [8:2] addr;           //声明7位宽的线网，位宽范围8：2
 reg  [0:31] data;          //声明32bit位宽的寄存器，最高有效位为0
 ```
 
+
+
+Verilog支持指定bit位后固定位宽的向量域选择访问
+
+```verilog
+[bit+:width]    //从起始bit位开始递增,位宽为width
+[bit-:width]    //从起始bit位开始递减，位宽为width
+```
+
+
+
+对信号重新进行组合成新的向量时，需要使用大括号
+
+```verilog
+wire [31:0]   temp1,temp2;
+assign temp1 = {byte1[0][7:0],data1[31:8]};    //数据拼接
+assign temp2 = {32{1'b0}};    //赋值32位的数值0
+```
+
+### 整数，实数，时间寄存器变量
+
+
+
+整数类型用关键字`integer`声明，声明时不用指明位宽，位宽和编译器有关，一般为32bit
+
+==reg型变量为无符号数==
+
+==integer型变量为有符号数==
+
+```verilog
+reg [31:0]   data;
+reg [3:0]    byte1[7:0];
+integer  j;
+always@* begin
+    for (j=0;j<3;j=j+1) begin
+        byte1[j] = data[(j+1)*8-1:j*8];
+        //把data[7:0]...data[31:24] 依次赋值给byte1[0][7:0]...[3][7:0]
+    end
+end
+```
+
+
+
+实数用关键字`real`来声明，可用十进制或科学计数法表示。 ==实数声明不能带有范围，默认值为0==
+
+==如果将一个实数赋值给整数，只有整数部分会被保留==
+
+
+
+Verilog使用特殊的时间寄存器time型变量，对仿真时间进行保存。==一般位宽为64bit==，可以通过系统函数`$time`获取当前仿真时间
+
+```verilog
+time    current_time;
+initial begin
+    #100 ;
+    current_time = $time;
+end
+```
+
+### 数组
+
+==线网数组也可以用于连接实例模块的端口==
+
+```verilog
+integer          flag [7:0] ; //8个整数组成的数组
+reg  [3:0]       counter [3:0] ; //由4个4bit计数器组成的数组
+wire [7:0]       addr_bus [3:0] ; //由4个8bit wire型变量组成的数组
+wire             data_bit[7:0][5:0] ; //声明1bit wire型变量的二维数组
+reg [31:0]       data_4d[11:0][3:0][3:0][255:0] ; //声明4维的32bit数据变量数组
+```
+
+
+
+==向量是一个单独的元件，位宽为 n；数组由多个元件组成，其中每个元件的位宽为 n 或 1==
+
+
+
+### 存储器
+
+描述RAM或ROM的行为
+
+```verilog
+reg    membit[0:255];
+reg [7:0]   mem[0:1023];     
+mem[511] = 8'b0 ;
+```
+
+
+
+### 参数
+
+参数表示常量，用关键字`parameter`声明，只能赋值一次
+
+```verilog
+parameter data_width = 10'd32;
+parameter i = 1,j = 2,k = 3;
+parameter mem_size = data_width * 10;
+```
+
+==通过实例化的方式，可以更改参数在模块中的值==
+
+==局部参数用 localparam 来声明，其作用和用法与 parameter 相同，区别在于它的值不能被改变。所以当参数只在本模块中调用时，可用 localparam 来说明。==
+
+
+
+### 字符串
+
+==字符串保存在 reg 类型的变量中，每个字符占用一个字节（8bit）==
+
+==字符串不能多行书写，即字符串中不能包含回车符==
+
+==如果寄存器变量的宽度大于字符串的大小，则使用 0 来填充左边的空余位；如果寄存器变量的宽度小于字符串大小，则会截去字符串左边多余的数据。==
+
+
+
+## 表达式
+
+
+
+### 表达式
+
+由操作符和操作数组成，目的是根据操作符的意义得到一个计算结果
+
+```verilog
+a^b ;  
+address[9:0] + 10'b1;
+flag1 && falg2;
+```
+
+
+
+### 操作数
+
+可以是任意的数据类型，只是某些特定的语法结构要求使用特定类型的操作数
+
+```verilog
+module test;
+    
+    //实数
+    real a,b,c;
+    c=a+b;
+    
+    //寄存器
+    reg [3:0] cprmu_1,cprmu_2;
+    always @(posedge clk)begin
+        cprmu_2 = cprmu_1 ^cprmu_2;
+    end
+    
+    //函数
+    reg flag;
+    flag = calculate_result(A,B);
+    
+    //非法
+    reg [3:0] res;
+    wire [3:0] temp;
+    always@ (*)begin
+        res = cprmu_2 - cprmu_1;
+    end
+endmodule
+```
+
+
+
+### 操作符
+
