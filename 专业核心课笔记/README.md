@@ -20,5 +20,14 @@
 
 [电路原理](https://www.bilibili.com/video/BV1R7411q759/?spm_id_from=333.1007.top_right_bar_window_custom_collection.content.click&vd_source=fa38200e9c2a3cbfeed5773d6182b4dd)
 
+[数据结构-王道考研](https://www.bilibili.com/video/BV1b7411N798/?spm_id_from=333.337.search-card.all.click&vd_source=fa38200e9c2a3cbfeed5773d6182b4dd)
+
 ## 参考书籍
+
+王道408
+
++ 数据结构
++ 操作系统
++ 计算机组成原理
++ 计算机网络
 
