@@ -190,6 +190,16 @@ else:
     pass
 ```
 
+```python
+match expression:
+    case pattern1:
+        # 处理pattern1的逻辑
+    case pattern2 if condition:
+        # 处理pattern2并且满足condition的逻辑
+    case _:
+        # 处理其他情况的逻辑
+```
+
 
 
 ## 循环结构
@@ -232,7 +242,7 @@ for xxx in xxx:
 
 
 
-## 列表	-> 可变序列
+## 列表	-> 	可变序列
 
 **使用`del`删除列表时，需要保证列表名存在**
 
@@ -339,7 +349,7 @@ ls = [[None for i in range(5)] for j in range(10)]
 
 
 
-## 元组	->不可变序列
+## 元组	->	不可变序列
 
 ```python
 #元组的创建
@@ -386,7 +396,7 @@ tuple1 = tuple(number)
 
 
 
-## 字典	-> 可变序列
+## 字典	-> 	可变序列
 
 
 
